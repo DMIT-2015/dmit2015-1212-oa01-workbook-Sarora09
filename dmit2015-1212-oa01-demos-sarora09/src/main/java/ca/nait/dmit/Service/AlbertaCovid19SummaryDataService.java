@@ -17,6 +17,10 @@ public class AlbertaCovid19SummaryDataService {
     private List<AlbertaCovid19SummaryData> dataList = new ArrayList<>();
 
     public AlbertaCovid19SummaryDataService() throws IOException {
+        dataList = loadCsvData();
+    }
+
+    private List<AlbertaCovid19SummaryData> loadCsvData() throws IOException {
         try (var reader = new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream("/data/covid-19-alberta-statistics-summary-data.csv")))) {
             final var delimiter = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
@@ -58,10 +62,12 @@ public class AlbertaCovid19SummaryDataService {
                 lineData.setNumberOfDeaths(Integer.parseInt(values[10]));
                 lineData.setNumberOfVariantsOfConcern(Integer.parseInt(values[11]));
                 lineData.setPercentPositivity(Double.parseDouble(values[12]));
-                
+
                 // Add lineData to dataList
                 dataList.add(lineData);
             }
+
+            return dataList;
 
         }
     }

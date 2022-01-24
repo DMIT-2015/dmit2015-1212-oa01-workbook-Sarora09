@@ -10,6 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+/**
+ * This clas manages AlbertaCovid19Case data.
+ *
+ * @author Sapan Arora
+ * @version 2022.01.23
+ */
 public class AlbertaCovid19CaseManager {
 
     private static AlbertaCovid19CaseManager instance;

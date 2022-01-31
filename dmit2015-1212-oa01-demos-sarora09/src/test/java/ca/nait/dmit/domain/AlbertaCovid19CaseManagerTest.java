@@ -45,6 +45,6 @@ class AlbertaCovid19CaseManagerTest {
     @Test
     @DisplayName("ShouldReturnAllWards")
     void shouldReturnAllWards() {
-        
+
     }
 }

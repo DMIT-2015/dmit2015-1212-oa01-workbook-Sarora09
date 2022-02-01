@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 public class AlbertaCovid19CaseManager {
 
     private static AlbertaCovid19CaseManager instance;
+
     private AlbertaCovid19CaseManager() throws IOException {
         albertaCovid19CaseList = loadCsvData();
     }
+
     public static AlbertaCovid19CaseManager getInstance() throws IOException {
         // https://www.journaldev.com/1377/java-singleton-design-pattern-best-practices-examples#thread-safe-singleton
         if(instance == null){
@@ -37,17 +40,18 @@ public class AlbertaCovid19CaseManager {
 
     @Getter
     private List<AlbertaCovid19Case> albertaCovid19CaseList;
-//    public AlbertaCovid19CaseManager() throws IOException {
-//        albertaCovid19CaseList = loadCsvData();
-//    }
+
     private List<AlbertaCovid19Case> loadCsvData() throws IOException {
         List<AlbertaCovid19Case> dataList = new ArrayList<>();
+
         try (var reader = new BufferedReader(new InputStreamReader(
                 getClass().getResourceAsStream("/data/covid-19-alberta-statistics.csv")))) {
+
             final var delimiter = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
             String line;
             // Skip the first line as it contains column headings
             reader.readLine();
+
             var dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             // Read one line at time from the input stream
             while ( (line = reader.readLine()) != null) {
@@ -60,6 +64,7 @@ public class AlbertaCovid19CaseManager {
                 // 4 - "Age group"
                 // 5 - "Case status"
                 // 6 - "Case type"
+
                 // Create an object from each row in the file
                 AlbertaCovid19Case lineData = new AlbertaCovid19Case();
                 lineData.setId(Integer.parseInt(values[0].replaceAll("\"","")));
@@ -69,11 +74,21 @@ public class AlbertaCovid19CaseManager {
                 lineData.setAgeGroup(values[4].replaceAll("\"",""));
                 lineData.setCaseStatus(values[5].replaceAll("\"",""));
                 lineData.setCaseType(values[6].replaceAll("\"",""));
+
                 // Add lineData to dataList
                 dataList.add(lineData);
             }
         }
+        AlbertaCovid19Case lineData = new AlbertaCovid19Case();
+        dataList.add(lineData);
         return dataList;
+    }
+
+    public Optional<AlbertaCovid19Case> findById(int id) {
+        return albertaCovid19CaseList
+                .stream()
+                .filter(item -> item.getId() == id)
+                .findFirst();
     }
 
     public long countTotalActiveCases() {
